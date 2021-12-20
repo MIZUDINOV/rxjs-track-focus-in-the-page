@@ -9,7 +9,8 @@
     </label>
     <button>I'm a button</button>
 </p>
-<div class="focus">
+<div class="focus" (focusWithin)="onFocusWithin($event)">
+    <h2>Currently focused: {{ name }}</h2>
     <p>
         <select>
             <option>Option 1</option>

@@ -5,7 +5,7 @@ import { FocusWithinService } from './focus-within.service';
 @Directive({
     selector: '[focusWithin]',
     outputs: ['focusWithin'],
-    providers: [],
+    providers: [FocusWithinService],
 })
 export class FocusWithinDirective {
     constructor(
