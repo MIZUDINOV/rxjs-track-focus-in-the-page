@@ -1,5 +1,6 @@
-import { Directive } from '@angular/core';
+import { Directive, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { FocusWithinService } from './focus-within.service';
 
 @Directive({
     selector: '[focusWithin]',
@@ -7,5 +8,8 @@ import { Observable } from 'rxjs';
     providers: [],
 })
 export class FocusWithinDirective {
-    constructor(readonly focusWithin: Observable<boolean | null>) {}
+    constructor(
+        @Inject(FocusWithinService)
+        readonly focusWithin: Observable<boolean | null>
+    ) {}
 }
