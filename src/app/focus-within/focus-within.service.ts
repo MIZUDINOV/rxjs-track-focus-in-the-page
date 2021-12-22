@@ -13,7 +13,9 @@ import {
 
 // Делаем наш сервис внедряемым с помощью @Injectable() и наблюдаемым, наследуясь от Observable
 @Injectable()
-export class FocusWithinService extends Observable<boolean | null> {
+export class FocusWithinService extends Observable<
+    Element | EventTarget | null
+> {
     constructor(
         // Внедряем в нашем конструкторе Токен документа
         @Inject(DOCUMENT) documentRef: Document,
@@ -21,22 +23,29 @@ export class FocusWithinService extends Observable<boolean | null> {
         { nativeElement }: ElementRef<HTMLElement>
     ) {
         // С помощью merge() объединяем все наблюдаемые объекты в одни поток
-        const focused$ = merge(
+        const focusedElement$ = merge(
             // Используем defer(), чтобы получить данные в момент подписки, а не в момент создания
-            defer(() => of(nativeElement.contains(documentRef.activeElement))),
+            defer(() => of(documentRef.activeElement)),
 
-            // Создаем событие focusin
-            fromEvent(nativeElement, 'focusin').pipe(mapTo(true)),
+            // Создаем событие focusin и возарщаем элемент
+            fromEvent(nativeElement, 'focusin').pipe(
+                map(({ target }) => target)
+            ),
 
-            // Создаем событие focusout
+            // Создаем событие focusout и возвращаем элемент
             fromEvent<FocusEvent>(nativeElement, 'focusout').pipe(
                 // Деструктурируем наш переданный тип FocusEvent, нам нужно поле relatedTarget
-                map(({ relatedTarget }) =>
-                    nativeElement.contains(relatedTarget as Node)
-                )
+                map(({ relatedTarget }) => relatedTarget)
             )
-        ).pipe(distinctUntilChanged());
+        ).pipe(
+            map((element: Element | EventTarget | null) =>
+                element && nativeElement.contains(element as Node)
+                    ? element
+                    : null
+            ),
+            distinctUntilChanged()
+        );
 
-        super((subscriber) => focused$.subscribe(subscriber));
+        super((subscriber) => focusedElement$.subscribe(subscriber));
     }
 }
