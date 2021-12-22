@@ -10,6 +10,6 @@ import { FocusWithinService } from './focus-within.service';
 export class FocusWithinDirective {
     constructor(
         @Inject(FocusWithinService)
-        readonly focusWithin: Observable<boolean | null>
+        readonly focusWithin: Observable<Element | null>
     ) {}
 }

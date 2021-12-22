@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-type Focused = boolean | null | string;
+type Focused = Element | null;
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -9,11 +9,11 @@ type Focused = boolean | null | string;
 export class AppComponent {
     focused: Focused = null;
 
-    get name(): Focused {
-        return this.focused ? this.focused : 'null';
+    get name(): Focused | string {
+        return this.focused ? this.focused.tagName : 'null';
     }
 
-    onFocusWithin(focuse: Focused) {
-        this.focused = focuse;
+    onFocusWithin(focused: Focused) {
+        this.focused = focused;
     }
 }
